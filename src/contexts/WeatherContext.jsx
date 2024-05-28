@@ -20,12 +20,13 @@ const WeatherProvider = ({ children }) => {
 			setForecast(data.daily);
 			setError("");
 		} catch (error) {
+			console.error("Weather API xatosi:", error);
 			setError("Xato yuz berdi. Iltimos, qayta urinib ko'ring.");
 		}
 	};
 
 	const fetchCityName = async (lat, lon) => {
-		const reverseGeocodingUrl = `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${apiKey}`;
+		const reverseGeocodingUrl = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${apiKey}`;
 		try {
 			const response = await fetch(reverseGeocodingUrl);
 			const data = await response.json();
@@ -35,12 +36,13 @@ const WeatherProvider = ({ children }) => {
 				setLocation("Noma'lum joy");
 			}
 		} catch (error) {
+			console.error("Geocoding API xatosi:", error);
 			setLocation("Noma'lum joy");
 		}
 	};
 
 	const handleSearch = async () => {
-		const geocodingUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`;
+		const geocodingUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`;
 		try {
 			const response = await fetch(geocodingUrl);
 			const data = await response.json();
@@ -52,6 +54,7 @@ const WeatherProvider = ({ children }) => {
 				setError("Shahar topilmadi.");
 			}
 		} catch (error) {
+			console.error("Geocoding API xatosi:", error);
 			setError("Xato yuz berdi. Iltimos, qayta urinib ko'ring.");
 		}
 	};
@@ -64,7 +67,8 @@ const WeatherProvider = ({ children }) => {
 					fetchWeather(latitude, longitude);
 					fetchCityName(latitude, longitude); // Joriy lokatsiyadan shahar nomini olish
 				},
-				() => {
+				(error) => {
+					console.error("Geolokatsiya xatosi:", error);
 					setError("Lokatsiyani olishga ruxsat berilmagan.");
 				}
 			);
