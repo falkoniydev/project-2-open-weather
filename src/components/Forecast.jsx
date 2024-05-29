@@ -6,13 +6,39 @@ const Forecast = () => {
 
 	if (!forecast) return null;
 
+	console.log(forecast);
+
 	return (
 		<div className="">
 			<h2>Prognoz</h2>
 			<div className="flex gap-2">
 				{forecast.slice(1, 6).map((day, index) => (
-					<div key={index} className="Forecast-day w-[350px] bg-[#000000c9] p-2">
-						<img src="/cloud.png" alt="" />
+					<div
+						key={index}
+						className="Forecast-day w-[350px] bg-[#000000c9] p-2">
+						<div className="w-[200px] h-[200] flex items-center justify-center">
+							{day.weather[0].description.includes("clear") && (
+								<img src="/sunny.png" alt="" width="150px" />
+							)}
+							{day.weather[0].description.includes("overcast clouds") && (
+								<div className="relative">
+									<img src="/sunny.png" alt="" width="150px" />
+									<img
+										className="absolute bottom-0 w-[250px]"
+										src="/cloud.png"
+										alt=""
+										width="200px"
+									/>
+								</div>
+							)}
+							{day.weather[0].description.includes("rain") && (
+								<img src="/rainy.png" alt="" />
+							)}
+							{day.weather[0].description.includes("clouds") && (
+								<img src="/cloud.png" alt="" />
+							)}
+						</div>
+
 						<p>Kuni: {new Date(day.dt * 1000).toLocaleDateString()}</p>
 						<p>Harorat: {day.temp.day}°C</p>
 						<p>Ob-havo: {day.weather[0].description}</p>
