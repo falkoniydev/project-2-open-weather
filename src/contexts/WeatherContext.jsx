@@ -7,8 +7,12 @@ const WeatherProvider = ({ children }) => {
 	const [city, setCity] = useState("");
 	const [weather, setWeather] = useState(null);
 	const [forecast, setForecast] = useState(null);
-	const [currentLocationDetails, setCurrentLocationDetails] = useState(null); // Current device location details
-	const [location, setLocation] = useState(null); // Joriy lokatsiya shahar nomini saqlash uchun
+	const [location, setLocation] = useState({
+		name: "",
+		state: "",
+		country: "",
+	});
+	const [mapLocation, setMapLocation] = useState({ lat: null, lon: null });
 	const [error, setError] = useState("");
 	const apiKey = "dbf41bf1010faed5ff639adbcac9439f"; // OpenWeather API kalitingizni bu yerga kiriting
 
@@ -20,6 +24,7 @@ const WeatherProvider = ({ children }) => {
 			setWeather(data.current);
 			setForecast(data.daily);
 			setError("");
+			setMapLocation({ lat, lon });
 		} catch (error) {
 			console.error("Weather API xatosi:", error);
 			setError("Xato yuz berdi. Iltimos, qayta urinib ko'ring.");
@@ -32,30 +37,14 @@ const WeatherProvider = ({ children }) => {
 			const response = await fetch(reverseGeocodingUrl);
 			const data = await response.json();
 			if (data.length > 0) {
-				setLocation(data[0].name);
+				const { name, state, country } = data[0];
+				setLocation({ name, state, country });
 			} else {
-				setLocation("Noma'lum joy");
+				setLocation({ name: "Noma'lum joy", state: "", country: "" });
 			}
 		} catch (error) {
 			console.error("Geocoding API xatosi:", error);
-			setLocation("Noma'lum joy");
-		}
-	};
-
-	const fetchLocationDetails = async (lat, lon) => {
-		const reverseGeocodingUrl = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${apiKey}`;
-		try {
-			const response = await fetch(reverseGeocodingUrl);
-			const data = await response.json();
-			if (data.length > 0) {
-				const { name, state, country, postal_code } = data[0];
-				return { name, state, country, postal_code };
-			} else {
-				return { name: "Unknown location" };
-			}
-		} catch (error) {
-			console.error("Geocoding API error:", error);
-			return { name: "Unknown location" };
+			setLocation({ name: "Noma'lum joy", state: "", country: "" });
 		}
 	};
 
@@ -67,7 +56,7 @@ const WeatherProvider = ({ children }) => {
 			if (data.length > 0) {
 				const { lat, lon } = data[0];
 				fetchWeather(lat, lon);
-				setLocation(data[0].name); // Qidiruv orqali shahar nomini o'rnatish
+				fetchCityName(lat, lon); // Qidiruv orqali shahar nomini olish
 			} else {
 				setError("Shahar topilmadi.");
 			}
@@ -77,7 +66,7 @@ const WeatherProvider = ({ children }) => {
 		}
 	};
 
-	useEffect(() => {
+	const resetToCurrentLocation = () => {
 		if ("geolocation" in navigator) {
 			navigator.geolocation.getCurrentPosition(
 				(position) => {
@@ -93,6 +82,10 @@ const WeatherProvider = ({ children }) => {
 		} else {
 			setError("Geolokatsiya mavjud emas.");
 		}
+	};
+
+	useEffect(() => {
+		resetToCurrentLocation();
 	}, []);
 
 	return (
@@ -103,8 +96,10 @@ const WeatherProvider = ({ children }) => {
 				weather,
 				forecast,
 				location,
+				mapLocation,
 				error,
 				handleSearch,
+				resetToCurrentLocation,
 			}}>
 			{children}
 		</WeatherContext.Provider>
@@ -121,24 +116,21 @@ export default WeatherProvider;
 // const WeatherProvider = ({ children }) => {
 // 	const [city, setCity] = useState("");
 // 	const [weather, setWeather] = useState(null);
-// 	const [forecast, setForecast] = useState([]);
-// 	const [location, setLocation] = useState(null);
+// 	const [forecast, setForecast] = useState(null);
+// 	const [location, setLocation] = useState({ name: "", state: "", country: "" });
+// 	const [mapLocation, setMapLocation] = useState({ lat: null, lon: null });
 // 	const [error, setError] = useState("");
-// 	const apiKey = "7672d422bcd26fcf05bcdb4046c3b71e"; // OpenWeather API kalitingizni bu yerga kiriting
+// 	const apiKey = "dbf41bf1010faed5ff639adbcac9439f"; // OpenWeather API kalitingizni bu yerga kiriting
 
 // 	const fetchWeather = async (lat, lon) => {
-// 		const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
-// 		const forecastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=${apiKey}&units=metric`;
+// 		const weatherUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=${apiKey}&units=metric`;
 // 		try {
-// 			const [weatherResponse, forecastResponse] = await Promise.all([
-// 				fetch(weatherUrl),
-// 				fetch(forecastUrl),
-// 			]);
-// 			const weatherData = await weatherResponse.json();
-// 			const forecastData = await forecastResponse.json();
-// 			setWeather(weatherData);
-// 			setForecast(forecastData.daily);
+// 			const response = await fetch(weatherUrl);
+// 			const data = await response.json();
+// 			setWeather(data.current);
+// 			setForecast(data.daily.map(day => ({ ...day, hourly: data.hourly.filter(hour => new Date(hour.dt * 1000).getDate() === new Date(day.dt * 1000).getDate()) })));
 // 			setError("");
+// 			setMapLocation({ lat, lon });
 // 		} catch (error) {
 // 			console.error("Weather API xatosi:", error);
 // 			setError("Xato yuz berdi. Iltimos, qayta urinib ko'ring.");
@@ -151,13 +143,14 @@ export default WeatherProvider;
 // 			const response = await fetch(reverseGeocodingUrl);
 // 			const data = await response.json();
 // 			if (data.length > 0) {
-// 				setLocation(data[0].name);
+// 				const { name, state, country } = data[0];
+// 				setLocation({ name, state, country });
 // 			} else {
-// 				setLocation("Noma'lum joy");
+// 				setLocation({ name: "Noma'lum joy", state: "", country: "" });
 // 			}
 // 		} catch (error) {
 // 			console.error("Geocoding API xatosi:", error);
-// 			setLocation("Noma'lum joy");
+// 			setLocation({ name: "Noma'lum joy", state: "", country: "" });
 // 		}
 // 	};
 
@@ -169,7 +162,7 @@ export default WeatherProvider;
 // 			if (data.length > 0) {
 // 				const { lat, lon } = data[0];
 // 				fetchWeather(lat, lon);
-// 				setLocation(data[0].name); // Qidiruv orqali shahar nomini o'rnatish
+// 				fetchCityName(lat, lon); // Qidiruv orqali shahar nomini olish
 // 			} else {
 // 				setError("Shahar topilmadi.");
 // 			}
@@ -179,7 +172,7 @@ export default WeatherProvider;
 // 		}
 // 	};
 
-// 	useEffect(() => {
+// 	const resetToCurrentLocation = () => {
 // 		if ("geolocation" in navigator) {
 // 			navigator.geolocation.getCurrentPosition(
 // 				(position) => {
@@ -195,6 +188,10 @@ export default WeatherProvider;
 // 		} else {
 // 			setError("Geolokatsiya mavjud emas.");
 // 		}
+// 	};
+
+// 	useEffect(() => {
+// 		resetToCurrentLocation();
 // 	}, []);
 
 // 	return (
@@ -205,8 +202,10 @@ export default WeatherProvider;
 // 				weather,
 // 				forecast,
 // 				location,
+// 				mapLocation,
 // 				error,
 // 				handleSearch,
+// 				resetToCurrentLocation,
 // 			}}>
 // 			{children}
 // 		</WeatherContext.Provider>

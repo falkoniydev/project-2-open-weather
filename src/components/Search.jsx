@@ -12,7 +12,7 @@ const Search = () => {
 				placeholder="Shahar nomini kiriting"
 				onChange={(e) => setCity(e.target.value)}
 			/>
-			<button className="" onClick={handleSearch}>
+			<button className="border p-1" onClick={handleSearch}>
 				Qidirish
 			</button>
 		</div>
