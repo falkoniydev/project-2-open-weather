@@ -16,10 +16,10 @@ const Header = () => {
 					onClick={resetToCurrentLocation}
 					className="btn-reset flex items-center max-sm:gap-0 gap-0">
 					<FaLocationDot />
-					<span className="max-lg:flex max-sm:hidden max-md:hidden">
+					<span className="max-sm:hidden max-md:hidden">
 						Sizning joylashuvingiz
 					</span>
-					<span className="max-lg:hidden max-sm:flex">Joylashuvingiz</span>
+					<span className="hidden max-sm:block">Joylashuvingiz</span>
 				</button>
 			</Link>
 		</header>
