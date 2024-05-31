@@ -177,7 +177,9 @@ const CurrentWeather = () => {
 					</div>
 				</div>
 			</div>
-			<div id="map" className="max-sm:w-[330px] w-[500px] h-[350px]"></div>
+			<div
+				id="map"
+				className="max-sm:w-[315px]  w-[500px] h-[350px]"></div>
 		</div>
 	);
 };

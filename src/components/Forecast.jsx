@@ -23,7 +23,7 @@ const Forecast = () => {
 					<Link
 						to={`/forecast/${day.dt}`}
 						key={index}
-						className="Forecast-day w-[350px] bg-[#000000c9] p-2 max-sm:flex max-sm:flex-col max-sm:items-center max-sm:justify-center">
+						className="Forecast-day w-[350px] max-sm:w-[340px] bg-[#000000c9] p-2 max-sm:flex max-sm:flex-col max-sm:items-center max-sm:justify-center">
 						<div className="w-[200px] h-[200px] flex items-center justify-center ">
 							{day.weather[0].description.includes("clear") && (
 								<img src="/sunny.png" alt="" width="150px" />
