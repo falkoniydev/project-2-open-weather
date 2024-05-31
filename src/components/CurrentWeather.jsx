@@ -8,12 +8,12 @@ const CurrentWeather = () => {
 
 	return (
 		<div className="CurrentWeather bg-[#000000db] flex justify-between p-2">
-			<div className="flex flex-col items-center justify-center gap-3">
-				<div className="flex items-center gap-2">
+			<div className="flex flex-col justify-center gap-3">
+				<div className="flex items-center gap-2 ps-4">
 					<span>
 						<FaLocationDot />
 					</span>
-					<h2>Hozirgi ob-havo - {location}</h2>
+					<h2>{location}</h2>
 				</div>
 				<div className="flex items-center gap-3">
 					{weather.weather[0].description.includes("clear") && (
@@ -37,8 +37,16 @@ const CurrentWeather = () => {
 						<img src="/cloud.png" alt="" width={300} />
 					)}
 					<div>
+						<p>BUGUN</p>
 						<p>Harorat: {weather.temp}°C</p>
-						<p>Ob-havo: {weather.weather[0].description}</p>
+						<p>
+							Ob-havo:{" "}
+							{weather.weather[0].description.includes("overcast clouds") &&
+								"Biroz bulutli"}
+							{weather.weather[0].description.includes(" clouds") && "Bulutli"}
+							{weather.weather[0].description.includes("clear sky") && "Ochiq"}
+							{weather.weather[0].description.includes("rain") && "Yomg'irli"}
+						</p>
 						<p>Namlik: {weather.humidity}%</p>
 						<p>Shamol: {weather.wind_speed} m/s</p>
 					</div>

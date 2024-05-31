@@ -35,13 +35,18 @@ const Forecast = () => {
 								<img src="/rainy.png" alt="" />
 							)}
 							{day.weather[0].description.includes("clouds") && (
-								<img src="/cloud.png" alt="" />
+								<img src="/cloud.png" alt="" className="mb-1" />
 							)}
 						</div>
 
 						<p>Kuni: {new Date(day.dt * 1000).toLocaleDateString()}</p>
 						<p>Harorat: {day.temp.day}°C</p>
-						<p>Ob-havo: {day.weather[0].description}</p>
+						<p>
+							Ob-havo:{" "}
+							{day.weather[0].description.includes("clouds") && "Bulutli"}
+							{day.weather[0].description.includes("clear sky") && "Ochiq"}
+							{day.weather[0].description.includes("rain") && "Yomg'irli"}
+						</p>
 					</div>
 				))}
 			</div>
