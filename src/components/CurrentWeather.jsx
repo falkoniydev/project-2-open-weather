@@ -53,7 +53,7 @@ const CurrentWeather = () => {
 					{weather.weather[0].description.includes("rain") && (
 						<img src="/rainy.png" alt="" />
 					)}
-					{/* {weather.weather[0].description === "overcast clouds" && (
+					{weather.weather[0].description.includes("clouds") && (
 						<div className="relative">
 							<img src="/sunny.png" alt="" width={200} />
 							<img
@@ -63,10 +63,10 @@ const CurrentWeather = () => {
 								width="200px"
 							/>
 						</div>
-					)} */}
+					)}
 
-					{weather.weather[0].description.includes("clouds") && (
-						<img src="/cloud.png" alt="" width={300} />
+					{weather.weather[0].description.includes("snow") && (
+						<img src="/snow.png" alt="" width={300} />
 					)}
 
 					<div>

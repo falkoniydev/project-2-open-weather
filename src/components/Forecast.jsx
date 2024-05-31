@@ -20,7 +20,7 @@ const Forecast = () => {
 							{day.weather[0].description.includes("clear") && (
 								<img src="/sunny.png" alt="" width="150px" />
 							)}
-							{day.weather[0].description.includes("overcast clouds") && (
+							{day.weather[0].description.includes("clouds") && (
 								<div className="relative">
 									<img src="/sunny.png" alt="" width="150px" />
 									<img
@@ -34,8 +34,8 @@ const Forecast = () => {
 							{day.weather[0].description.includes("rain") && (
 								<img src="/rainy.png" alt="" />
 							)}
-							{day.weather[0].description.includes("clouds") && (
-								<img src="/cloud.png" alt="" className="mb-1" />
+							{day.weather[0].description.includes("snow") && (
+								<img src="/snow.png" width="160px" alt="" className="mb-1" />
 							)}
 						</div>
 

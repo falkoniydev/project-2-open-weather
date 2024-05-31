@@ -5,7 +5,7 @@ const Search = () => {
 	const { setCity, handleSearch } = useWeather();
 
 	return (
-		<div className="Search  flex items-center justify-center gap-3 mb-2">
+		<div className="Search  flex items-center justify-center gap-3 mb-4">
 			<input
 				className="w-[600px] p-2 text-black"
 				type="text"
